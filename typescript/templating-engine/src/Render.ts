@@ -50,7 +50,10 @@ export function createNode(
     };
 }
 
-export function createHtml(node: Node | string): string {
+export function createHtml(
+    node: Node | string,
+    data?: { [key: string]: string }
+): string {
     if (typeof node === "string") return escapeHtml(node);
 
     const elem = node.nodeName;
@@ -64,7 +67,9 @@ export function createHtml(node: Node | string): string {
 
     const closeTag = isSelfClosingTag
         ? ""
-        : `${children.map(createHtml).join("\n")}</${elem}>`;
+        : `${children
+              .map((child) => createHtml(child, data))
+              .join("\n")}</${elem}>`;
     return openTag + closeTag;
 }
 

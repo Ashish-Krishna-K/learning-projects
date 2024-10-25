@@ -33,7 +33,7 @@ export function createNode(nodeName, attributes, ...args) {
         children: args.length ? args.flat() : null,
     };
 }
-export function createHtml(node) {
+export function createHtml(node, data) {
     if (typeof node === "string")
         return escapeHtml(node);
     const elem = node.nodeName;
@@ -45,7 +45,9 @@ export function createHtml(node) {
         .join(" ")} ${isSelfClosingTag ? "/" : ""}>`;
     const closeTag = isSelfClosingTag
         ? ""
-        : `${children.map(createHtml).join("\n")}</${elem}>`;
+        : `${children
+            .map((child) => createHtml(child, data))
+            .join("\n")}</${elem}>`;
     return openTag + closeTag;
 }
 function convertAttributes(attributes) {

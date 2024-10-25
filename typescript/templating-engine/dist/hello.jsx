@@ -23,6 +23,10 @@
         </ul>
       </section>
 
+      <p>{
+    // @ts-ignore
+    data.test}</p>
+
       <hr />
       <footer>
         <p>&copy; 2024 My Company. All rights reserved.</p>
