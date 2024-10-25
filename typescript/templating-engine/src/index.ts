@@ -9,17 +9,23 @@ async function main() {
                 ["@babel/plugin-transform-react-jsx", { pragma: "createNode" }],
             ],
         });
-        const result = eval(`
-        const createNode = ${createNode.toString()}
-        ${transpiled?.code}
-        `);
-        const html = createHtml(result);
+        const transpiledCode = transpiled?.code?.replace(
+            /^"use strict";\s*/,
+            ""
+        );
+        const nodeCreator = createNodeCreator(transpiledCode || "");
+        const resultNode = nodeCreator(createNode);
+        const html = createHtml(resultNode);
         await writeFile("index.html", html);
         console.log("done");
     } catch (error) {
         if (error instanceof Error) console.error(error.message);
         else if (typeof error === "string") console.error(error);
     }
+}
+
+function createNodeCreator(transpiledCode: string) {
+    return new Function("createNode", `return ${transpiledCode}`);
 }
 
 main();
